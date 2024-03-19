@@ -11,6 +11,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +21,8 @@ import tech.remiges.workshop.Service.IReportGenerator;
 
 @Component("xmldocGen")
 public class xmlDocGenerator implements IReportGenerator {
+
+    private static final Logger logger = LoggerFactory.getLogger(xmlDocGenerator.class);
 
     @Autowired
     ReportFileFolderUtils reportfileFolder;
@@ -42,7 +46,8 @@ public class xmlDocGenerator implements IReportGenerator {
             return data;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            logger.error(e.toString());
         }
         return null;
     }

@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.val;
+import tech.remiges.workshop.Constants;
 import tech.remiges.workshop.Entity.Config;
 import tech.remiges.workshop.Entity.Employee;
 import tech.remiges.workshop.Repository.ConfigRepository;
@@ -177,9 +178,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/update")
-    public WorkshopResponse updateEmployee(@RequestBody Employee request) throws Exception {
-
-        Employee updateemp = (Employee) request;
+    public WorkshopResponse updateEmployee(@RequestBody Employee updateemp) throws Exception {
 
         Employee updatedemp = empService.updateEmployee(updateemp);
         Map<String, Object> result = new HashMap<>();
@@ -193,7 +192,6 @@ public class EmployeeController {
 
     @PatchMapping("/{id}")
     public WorkshopResponse partialUpdateEntity(@RequestBody Employee partialEntity) throws Exception {
-        // Employee updateemp = (Employee) partialEntity;
 
         Employee updatedemp = empService.PartialUpdate(partialEntity);
         Map<String, Object> result = new HashMap<>();
@@ -220,7 +218,7 @@ public class EmployeeController {
 
     @GetMapping("getcount")
     public WorkshopResponse getEmployeeCount(@RequestParam String empName) {
-        String value = redisService.getValue("user." + empName);
+        String value = redisService.getValue(Constants.USERCONST + empName);
 
         Map<String, Object> result = new HashMap<>();
         WorkshopResponse response = null;
@@ -257,7 +255,7 @@ public class EmployeeController {
         String deptname = (String) request.getData().get("deptname");
         String count = (String) request.getData().get("count");
 
-        String skey = "user." + deptname + "." + empid;
+        String skey = Constants.USERCONST + deptname + "." + empid;
         String value = redisService.getValue(skey);
         if (value == null) {
             redisService.setValueWithTTL(skey, "1", 180);
@@ -305,12 +303,12 @@ public class EmployeeController {
         String empid = (String) request.getData().get("empid");
         String deptname = (String) request.getData().get("deptname");
 
-        String skey = "user." + deptname + "." + empid;
+        String skey = Constants.USERCONST + deptname + "." + empid;
         String value = redisService.getValue(skey);
 
         if (value == null) {
             List<Config> byConfigName = configSvc.getConfig(skey);
-            if (byConfigName != null && byConfigName.size() > 0) {
+            if (byConfigName != null && byConfigName.isEmpty() == false) {
                 Config cvalue = byConfigName.get(0);
                 value = cvalue.getConfigValue();
 

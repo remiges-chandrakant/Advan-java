@@ -14,15 +14,20 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.annotations.Comment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import tech.remiges.workshop.Entity.Employee;
 import tech.remiges.workshop.Service.IDateLoader;
 import tech.remiges.workshop.Service.IReportGenerator;
+import tech.remiges.workshop.controller.EmployeeController;
 
 @Component("XlsReport")
 public class XlsReportGenerator implements IReportGenerator {
+
+    private static final Logger logger = LoggerFactory.getLogger(XlsReportGenerator.class);
 
     @Autowired
     ReportFileFolderUtils reportfileFolder;
@@ -74,7 +79,8 @@ public class XlsReportGenerator implements IReportGenerator {
             return data;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            logger.error(e.toString());
         }
 
         return null;

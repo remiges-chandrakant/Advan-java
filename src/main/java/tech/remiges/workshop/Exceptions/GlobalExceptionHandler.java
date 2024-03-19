@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
         WorkshopResponse response = new WorkshopResponse();
         response.setStatus(CommonUtils.FAIL);
         response.setStatus_Msg("Error occured" + ex.toString());
-        ex.printStackTrace();
+        // ex.printStackTrace();
         logger.debug(ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }

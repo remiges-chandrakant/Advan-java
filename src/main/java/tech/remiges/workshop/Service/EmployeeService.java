@@ -27,25 +27,31 @@ public class EmployeeService {
     private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
 
     @Autowired
-    EmployeeRepository emprepo;
+    EmployeeService(EmployeeRepository emprepo, EmployeeShadowRepository empshrepo,
+            @Qualifier("XlsReport") IReportGenerator xlsreportgen,
+            @Qualifier("PDFReport") IReportGenerator pdfreportgen,
+            @Qualifier("xmldocGen") IReportGenerator xmlreportgen,
+            ObjectMapper objectMapper) {
 
-    @Autowired
-    EmployeeShadowRepository empshrepo;
+        this.emprepo = emprepo;
+        this.empshrepo = empshrepo;
+        this.xlsreportgen = xlsreportgen;
+        this.pdfreportgen = pdfreportgen;
+        this.xmlreportgen = xmlreportgen;
+        this.objectMapper = objectMapper;
+    }
 
-    @Autowired
-    @Qualifier("PDFReport")
-    IReportGenerator pdfreportgen;
+    private final EmployeeRepository emprepo;
 
-    @Autowired
-    @Qualifier("XlsReport")
-    IReportGenerator xlsreportgen;
+    private final EmployeeShadowRepository empshrepo;
 
-    @Autowired
-    @Qualifier("xmldocGen")
-    IReportGenerator xmlreportgen;
+    private final IReportGenerator pdfreportgen;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final IReportGenerator xlsreportgen;
+
+    private final IReportGenerator xmlreportgen;
+
+    private final ObjectMapper objectMapper;
 
     public void yourMethod() {
         // Set MDC properties
@@ -86,7 +92,7 @@ public class EmployeeService {
             return xmlreportgen.GenerateReport(listEmployee);
 
         } else {
-            return null;
+            return new byte[] {};
         }
 
     }

@@ -14,6 +14,8 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -24,6 +26,8 @@ import tech.remiges.workshop.Service.IReportGenerator;
 
 @Component("PDFReport")
 public class PDFGenerator implements IReportGenerator {
+
+    private static final Logger logger = LoggerFactory.getLogger(PDFGenerator.class);
 
     @Autowired
     ReportFileFolderUtils reportfileFolder;
@@ -91,7 +95,8 @@ public class PDFGenerator implements IReportGenerator {
             return data;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            logger.error(e.toString());
         }
         return null;
     }
