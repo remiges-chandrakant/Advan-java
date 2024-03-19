@@ -1,0 +1,18 @@
+<configuration>
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/my-application.log</file>
+        
+        <encoder>
+            <pattern>%d{ISO8601}|user=%X{user}|api=%X{api}|status=%msg|error_code=%X{error_code}|error_message=%X{error_message}|client_reqid=%X{client_reqid}|req=%X{req}|%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="FILE" />
+    </root>
+
+
+    <logger name="tech.remiges.workshop" level="DEBUG"/>
+
+
+</configuration>
