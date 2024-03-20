@@ -12,7 +12,7 @@
     </root>
 
 
-    <logger name="tech.remiges.workshop" level="DEBUG"/>
+    <logger name="tech.remiges.workshop" level="INFO"/>
 
 
 </configuration>

@@ -24,8 +24,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 public class UtilityController {
 
-    @Autowired
     private Environment env;
+
+    @Autowired
+    public UtilityController(Environment env) {
+        this.env = env;
+    }
 
     @GetMapping("/hello")
     public WorkshopResponse GetHelloMessage() {

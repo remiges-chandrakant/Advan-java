@@ -54,23 +54,22 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("/myhr/employee")
 public class EmployeeController {
 
-    // private final AuthenticationManager authenticationManager;
+    private RedisService redisService;
 
-    private JwtUtils jwtUtil;
-
-    @Autowired
-    RedisService redisService;
-
-    @Autowired
-    ConfigService configSvc;
+    private ConfigService configSvc;
 
     @Value("${filenamepre}")
     private String filepre;
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
 
-    @Autowired
-    EmployeeService empService;
+    private EmployeeService empService;
+
+    public EmployeeController(RedisService redisService, ConfigService configSvc, EmployeeService empService) {
+        this.redisService = redisService;
+        this.configSvc = configSvc;
+        this.empService = empService;
+    }
 
     @PostMapping("/add")
     public WorkshopResponse addEmployee(@RequestBody Employee request) {
@@ -258,11 +257,25 @@ public class EmployeeController {
         String skey = Constants.USERCONST + deptname + "." + empid;
         String value = redisService.getValue(skey);
         if (value == null) {
-            redisService.setValueWithTTL(skey, "1", 180);
-            Config config = new Config();
-            config.setConfigName(skey);
-            config.setConfigValue("1");
-            configSvc.UpdateConfig(config);
+
+            logger.info("Read data from DB" + skey + "not found in cache.");
+
+            List<Config> byConfigName = configSvc.getConfig(skey);
+            if (byConfigName != null && byConfigName.isEmpty() == false) {
+                Config cvalue = byConfigName.get(0);
+                value = cvalue.getConfigValue();
+                logger.info("Read data from DB" + skey + "not found in cache.");
+                redisService.setValueWithTTL(skey, value, 180);
+            } else {
+
+                redisService.setValueWithTTL(skey, "1", 180);
+                Config config = new Config();
+                config.setConfigName(skey);
+                config.setConfigValue("1");
+                configSvc.UpdateConfig(config);
+                logger.info("set default value for " + skey + " in cache and DB.");
+            }
+
         } else {
             try {
                 Integer ival = Integer.valueOf(count);
@@ -300,6 +313,7 @@ public class EmployeeController {
             return response;
 
         }
+
         String empid = (String) request.getData().get("empid");
         String deptname = (String) request.getData().get("deptname");
 
@@ -311,7 +325,7 @@ public class EmployeeController {
             if (byConfigName != null && byConfigName.isEmpty() == false) {
                 Config cvalue = byConfigName.get(0);
                 value = cvalue.getConfigValue();
-
+                logger.info("Read data from DB" + skey + "not found in cache.");
                 redisService.setValueWithTTL(skey, value, 180);
             }
 
