@@ -258,7 +258,7 @@ public class EmployeeController {
         String value = redisService.getValue(skey);
         if (value == null) {
 
-            logger.info("Read data from DB" + skey + "not found in cache.");
+            logger.info("Read data from DB" + skey + "not found in  redis cache.");
 
             List<Config> byConfigName = configSvc.getConfig(skey);
             if (byConfigName != null && byConfigName.isEmpty() == false) {
