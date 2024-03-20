@@ -264,7 +264,7 @@ public class EmployeeController {
             if (byConfigName != null && byConfigName.isEmpty() == false) {
                 Config cvalue = byConfigName.get(0);
                 value = cvalue.getConfigValue();
-                logger.info("Read data from DB" + skey + "not found in cache.");
+                logger.info("Read data from DB" + skey + "not found in cache in redis cache.");
                 redisService.setValueWithTTL(skey, value, 180);
             } else {
 
