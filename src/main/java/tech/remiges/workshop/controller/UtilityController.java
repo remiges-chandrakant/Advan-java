@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import tech.remiges.workshop.Request.WorkshopRequest;
+import tech.remiges.workshop.Service.RabbitMqService;
 import tech.remiges.workshop.Utils.CommonUtils;
 import tech.remiges.workshop.Utils.ErrorCodes;
 import tech.remiges.workshop.WorkshopResponse.WorkshopResponse;
@@ -26,9 +27,12 @@ public class UtilityController {
 
     private Environment env;
 
+    private RabbitMqService rabitSvc;
+
     @Autowired
-    public UtilityController(Environment env) {
+    public UtilityController(Environment env, RabbitMqService rabitSvc) {
         this.env = env;
+        this.rabitSvc = rabitSvc;
     }
 
     @GetMapping("/hello")
@@ -54,6 +58,28 @@ public class UtilityController {
             response.setStatus(CommonUtils.SUCCESS);
             HashMap<String, Object> resdata = new HashMap<>();
             String name = data.get("name").toString();
+            resdata.put("msg", "Hello "
+                    + name);
+            response.setData(resdata);
+        }
+        return response;
+    }
+
+    @PostMapping("/sendMsg")
+    public WorkshopResponse sendMsg(@RequestBody WorkshopRequest request) {
+        WorkshopResponse response = new WorkshopResponse();
+        Map<String, Object> data = request.getData();
+
+        if (data.isEmpty()) {
+            response.setStatus(CommonUtils.FAIL);
+            response.setStatus_Msg("provide data");
+        } else {
+            response.setStatus(CommonUtils.SUCCESS);
+            HashMap<String, Object> resdata = new HashMap<>();
+            String name = data.get("name").toString();
+
+            rabitSvc.sendMsg(name);
+
             resdata.put("msg", "Hello "
                     + name);
             response.setData(resdata);
